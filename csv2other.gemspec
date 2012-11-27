@@ -12,6 +12,16 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{You prepare template, use CSV to iterate and you have some informations}
   gem.homepage      = ""
 
+  gem.add_dependency "nokogiri"
+  gem.add_development_dependency "geminabox"
+  gem.add_development_dependency "rspec"
+  gem.add_development_dependency "guard"
+  gem.add_development_dependency "guard-rspec"
+  gem.add_development_dependency "rb-fsevent"
+  gem.add_development_dependency "growl"
+  gem.add_development_dependency "spork"
+  gem.add_development_dependency "guard-spork"
+
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
