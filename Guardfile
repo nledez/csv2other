@@ -1,10 +1,7 @@
-# A sample Guardfile
-# More info at https://github.com/guard/guard#readme
-
 guard 'spork' do
   watch('Gemfile')
   watch('Gemfile.lock')
-  watch('spec/spec_helper.rb')
+  watch('spec/spec_helper.rb') { :rspec }
 end
 
 guard 'rspec' do
