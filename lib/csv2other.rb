@@ -37,6 +37,12 @@ class Csv2other
     ERB.new(template).result(self.get_binding)
   end
 
+  def convert(value)
+    @e = value
+    template = File.open(@template).readlines.join
+    ERB.new(template).result(self.get_binding)
+  end
+
   # Method needed for ERB
   # Expose private binding() method.
   # http://www.stuartellis.eu/articles/erb/
