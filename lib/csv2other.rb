@@ -1,6 +1,7 @@
 require 'csv2other/version'
 require 'csv'
 require 'erb'
+require 'nokogiri'
 
 class Csv2other
   attr_reader :content
@@ -26,6 +27,12 @@ class Csv2other
     @template = File.open(@template_filename).readlines.join
   end
 
+  def load_xsd(xsd_path)
+    @xsd_path = xsd_path
+    @xsddoc = Nokogiri::XML(File.read(xsd_path), xsd_path)
+    @xsd = Nokogiri::XML::Schema.from_document(@xsddoc)
+  end
+
   def each
     @content.each do |k, v|
       yield k, v
@@ -34,12 +41,23 @@ class Csv2other
 
   def convert_with_key(key)
     @e = @content[key]
-    ERB.new(@template).result(self.get_binding)
+    render
   end
 
   def convert(value)
     @e = value
-    ERB.new(@template).result(self.get_binding)
+    render
+  end
+
+  def render
+    content = ERB.new(@template).result(self.get_binding)
+    unless @xsd.nil?
+      @xsd.validate(Nokogiri::XML(content)).each do |error|
+        puts error.message
+        raise error
+      end
+    end
+    content
   end
 
   # Method needed for ERB

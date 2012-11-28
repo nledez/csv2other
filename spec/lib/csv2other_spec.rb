@@ -55,4 +55,33 @@ describe "Csv2other" do
       diff_file("tmp/02-#{account}.xml", "spec/data/case02/03-results/#{account}.xml")
     end
   end
+
+  it "Can validate XML" do
+    converter03 = Csv2other.new
+    converter03.parse("spec/data/case03/01-case03.csv", "account")
+
+    converter03.load_template("spec/data/case03/02-template.xml.erb")
+    converter03.load_xsd("spec/data/case03/account.xsd")
+
+    filename_value = "tmp/03-dummy.xml"
+    destination = File.open(filename_value, "w")
+
+    begin
+      orig_stdout = $stdout.clone
+      $stdout.reopen File.new('tmp/stdout.txt', 'w')
+
+      expect do
+        converter03.each do |k, e|
+          destination.puts converter03.convert(e)
+        end
+      end.to raise_error(Nokogiri::XML::SyntaxError, "Element 'account': This element is not expected.")
+    rescue Exception => e
+      $stdout.reopen orig_stdout
+      raise e
+    ensure
+      $stdout.reopen orig_stdout
+    end
+
+    destination.close
+  end
 end
