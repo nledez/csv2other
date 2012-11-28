@@ -22,7 +22,8 @@ class Csv2other
   end
 
   def load_template(template_filename)
-    @template = template_filename
+    @template_filename = template_filename
+    @template = File.open(@template_filename).readlines.join
   end
 
   def each
@@ -33,14 +34,12 @@ class Csv2other
 
   def convert_with_key(key)
     @e = @content[key]
-    template = File.open(@template).readlines.join
-    ERB.new(template).result(self.get_binding)
+    ERB.new(@template).result(self.get_binding)
   end
 
   def convert(value)
     @e = value
-    template = File.open(@template).readlines.join
-    ERB.new(template).result(self.get_binding)
+    ERB.new(@template).result(self.get_binding)
   end
 
   # Method needed for ERB
