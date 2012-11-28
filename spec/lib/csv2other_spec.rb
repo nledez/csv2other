@@ -37,4 +37,22 @@ describe "Csv2other" do
 
     diff_file(filename_value, 'spec/data/case01/03-expected.cli')
   end
+
+  it "Can generate separe files" do
+    converter02 = Csv2other.new
+    converter02.parse("spec/data/case02/01-case02.csv", "account")
+
+    converter02.load_template("spec/data/case02/02-template.xml.erb")
+
+    converter02.each do |k, e|
+      filename_value = "tmp/02-#{k}.xml"
+      destination = File.open(filename_value, "w")
+      destination.puts converter02.convert(e)
+      destination.close
+    end
+
+    converter02.list.each do |account|
+      diff_file("tmp/02-#{account}.xml", "spec/data/case02/03-results/#{account}.xml")
+    end
+  end
 end
