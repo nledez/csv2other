@@ -38,6 +38,23 @@ describe "Csv2other" do
     diff_file(filename_value, 'spec/data/case01/03-expected.cli')
   end
 
+  it "Can create target file without parameters" do
+    converter01 = Csv2other.new
+    converter01.parse("spec/data/case01/01-input.csv", "host")
+
+    converter01.load_template("spec/data/case01/02-template.cli.erb")
+
+    filename_value = 'tmp/01-03-expected-with-parameters.cli'
+    destination = File.open(filename_value, "w")
+    converter01.each do |k, e|
+      @e = e
+      destination.puts converter01.render(binding)
+    end
+    destination.close
+
+    diff_file(filename_value, 'spec/data/case01/03-expected.cli')
+  end
+
   it "Can generate separe files" do
     converter02 = Csv2other.new
     converter02.parse("spec/data/case02/01-case02.csv", "account")

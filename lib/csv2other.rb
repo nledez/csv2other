@@ -49,8 +49,8 @@ class Csv2other
     render
   end
 
-  def render
-    content = ERB.new(@template).result(self.get_binding)
+  def render(my_binding = binding)
+    content = ERB.new(@template).result(my_binding)
     unless @xsd.nil?
       @xsd.validate(Nokogiri::XML(content)).each do |error|
         puts error.message
@@ -58,12 +58,5 @@ class Csv2other
       end
     end
     content
-  end
-
-  # Method needed for ERB
-  # Expose private binding() method.
-  # http://www.stuartellis.eu/articles/erb/
-  def get_binding
-    binding()
   end
 end
