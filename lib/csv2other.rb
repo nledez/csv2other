@@ -39,16 +39,6 @@ class Csv2other
     end
   end
 
-  def convert_with_key(key)
-    @e = @content[key]
-    render
-  end
-
-  def convert(value)
-    @e = value
-    render
-  end
-
   def render(my_binding = binding)
     content = ERB.new(@template).result(my_binding)
     unless @xsd.nil?

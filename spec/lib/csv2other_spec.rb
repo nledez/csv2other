@@ -15,7 +15,8 @@ describe "Csv2other" do
     filename_key = 'tmp/01-03-expected-with-key.cli'
     destination = File.open(filename_key, "w")
     converter01.each do |k, e|
-      destination.puts converter01.convert_with_key(k)
+      @e = e
+      destination.puts converter01.render(binding)
     end
     destination.close
 
@@ -31,7 +32,8 @@ describe "Csv2other" do
     filename_value = 'tmp/01-03-expected-with-value.cli'
     destination = File.open(filename_value, "w")
     converter01.each do |k, e|
-      destination.puts converter01.convert(e)
+      @e = e
+      destination.puts converter01.render(binding)
     end
     destination.close
 
@@ -62,9 +64,10 @@ describe "Csv2other" do
     converter02.load_template("spec/data/case02/02-template.xml.erb")
 
     converter02.each do |k, e|
+      @e = e
       filename_value = "tmp/02-#{k}.xml"
       destination = File.open(filename_value, "w")
-      destination.puts converter02.convert(e)
+      destination.puts converter02.render(binding)
       destination.close
     end
 
@@ -89,7 +92,8 @@ describe "Csv2other" do
 
       expect do
         converter03.each do |k, e|
-          destination.puts converter03.convert(e)
+          @e = e
+          destination.puts converter03.render(binding)
         end
       end.to raise_error(Nokogiri::XML::SyntaxError, "Element 'account': This element is not expected.")
     rescue Exception => e
