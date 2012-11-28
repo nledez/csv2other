@@ -33,8 +33,8 @@ class Csv2other
 
   def convert_with_key(key)
     @e = @content[key]
-    # template = File.open(@template).readlines.join
-    # ERB.new(template).result(self.get_binding)
+    template = File.open(@template).readlines.join
+    ERB.new(template).result(self.get_binding)
   end
 
   # Method needed for ERB

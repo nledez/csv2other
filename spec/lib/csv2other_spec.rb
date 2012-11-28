@@ -12,13 +12,13 @@ describe "Csv2other" do
 
     converter01.load_template("spec/data/case01/02-template.cli.erb")
 
-    filename = 'tmp/01-03-expected.cli'
-    destination = File.open(filename, "w")
+    filename_key = 'tmp/01-03-expected-with-key.cli'
+    destination = File.open(filename_key, "w")
     converter01.each do |k, e|
       destination.puts converter01.convert_with_key(k)
     end
     destination.close
 
-    # diff_file(filename, 'spec/data/case01/03-expected.cli')
+    diff_file(filename_key, 'spec/data/case01/03-expected.cli')
   end
 end
