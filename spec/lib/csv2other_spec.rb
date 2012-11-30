@@ -81,7 +81,6 @@ describe "Csv2other" do
     converter03.parse("spec/data/case03/01-case03.csv", "account")
 
     converter03.load_template("spec/data/case03/02-template.xml.erb")
-    converter03.load_xsd("spec/data/case03/account.xsd")
 
     filename_value = "tmp/03-dummy.xml"
     destination = File.open(filename_value, "w")
@@ -94,8 +93,55 @@ describe "Csv2other" do
         converter03.each do |k, e|
           @e = e
           destination.puts converter03.render(binding)
+          converter03.validate_with_xsd("spec/data/case03/account.xsd", binding)
         end
       end.to raise_error(Nokogiri::XML::SyntaxError, "Element 'account': This element is not expected.")
+    rescue Exception => e
+      $stdout.reopen orig_stdout
+      raise e
+    ensure
+      $stdout.reopen orig_stdout
+    end
+
+    destination.close
+  end
+
+  it "Can validate XML subpart" do
+    converter04 = Csv2other.new
+    converter04.parse("spec/data/case04/01-case04.csv", "account")
+
+    converter04.load_template("spec/data/case04/02-template.xml.erb")
+
+    filename_value = "tmp/03-dummy-02.xml"
+    destination = File.open(filename_value, "w")
+
+    converter04.each do |k, e|
+      @e = e
+      converter04.validate_with_xsd("spec/data/case04/account.xsd", binding)
+      converter04.validate_with_xsd("spec/data/case04/subpart.xsd", binding, '/account/subpart')
+      destination.puts converter04.render(binding)
+    end
+
+    destination.close
+
+    # With bad part
+    converter04.load_template("spec/data/case04/02-template-bad.xml.erb")
+
+    filename_value = "tmp/03-dummy-02-bad.xml"
+    destination = File.open(filename_value, "w")
+
+    begin
+      orig_stdout = $stdout.clone
+      $stdout.reopen File.new('tmp/stdout.txt', 'w')
+
+      expect do
+        converter04.each do |k, e|
+          @e = e
+          converter04.validate_with_xsd("spec/data/case04/account.xsd", binding)
+          converter04.validate_with_xsd("spec/data/case04/subpart.xsd", binding, '/account/subpart')
+          destination.puts converter04.render(binding)
+        end
+      end.to raise_error(Nokogiri::XML::SyntaxError, "Element 'subpart': Missing child element(s). Expected is ( anotherneed ).")
     rescue Exception => e
       $stdout.reopen orig_stdout
       raise e

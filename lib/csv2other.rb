@@ -27,12 +27,6 @@ class Csv2other
     @template = File.open(@template_filename).readlines.join
   end
 
-  def load_xsd(xsd_path)
-    @xsd_path = xsd_path
-    @xsddoc = Nokogiri::XML(File.read(xsd_path), xsd_path)
-    @xsd = Nokogiri::XML::Schema.from_document(@xsddoc)
-  end
-
   def each
     @content.each do |k, v|
       yield k, v
@@ -40,13 +34,22 @@ class Csv2other
   end
 
   def render(my_binding = binding)
-    content = ERB.new(@template).result(my_binding)
-    unless @xsd.nil?
-      @xsd.validate(Nokogiri::XML(content)).each do |error|
-        puts error.message
-        raise error
-      end
+    ERB.new(@template).result(my_binding)
+  end
+
+  def validate_with_xsd(xsd_path, binding_from, xpath = nil)
+    content = self.render(binding_from)
+    unless xpath.nil?
+      content = Nokogiri::XML(content).xpath(xpath).to_xml
     end
-    content
+
+    xsd_path = xsd_path
+    xsddoc = Nokogiri::XML(File.read(xsd_path), xsd_path)
+    xsd = Nokogiri::XML::Schema.from_document(xsddoc)
+
+    xsd.validate(Nokogiri::XML(content)).each do |error|
+      puts error.message
+      raise error
+    end
   end
 end
