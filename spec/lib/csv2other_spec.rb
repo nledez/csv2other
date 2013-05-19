@@ -1,6 +1,8 @@
 require 'csv2other_helper'
 require 'csv2other'
 
+Dir.mkdir "tmp" unless Dir.exist? "tmp"
+
 describe "Csv2other" do
   include Csv2otherSpecHelper
 
