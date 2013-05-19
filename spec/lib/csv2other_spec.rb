@@ -1,3 +1,4 @@
+require File.dirname(__FILE__) + '../../spec_helper'
 require 'csv2other_helper'
 require 'csv2other'
 
