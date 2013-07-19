@@ -16,18 +16,6 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency "rspec"
 
-  gem.add_development_dependency "guard"
-  gem.add_development_dependency "guard-rspec"
-  gem.add_development_dependency "rb-fsevent"
-
-  gem.add_development_dependency "growl"
-  gem.add_development_dependency "spork"
-  gem.add_development_dependency "guard-spork"
-
-  gem.add_development_dependency "simplecov"
-  gem.add_development_dependency "json", '~> 1.7.7'
-  gem.add_development_dependency "coveralls"
-
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
