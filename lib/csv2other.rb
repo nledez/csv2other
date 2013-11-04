@@ -12,7 +12,7 @@ class Csv2other
 
   def parse(csv_filename, key)
     key_symbol = key.to_sym
-    CSV.foreach(csv_filename, :col_sep =>';', :headers => true, :header_converters => :symbol) do |line|
+    CSV.foreach(csv_filename, :col_sep =>';', :headers => true, :header_converters => :symbol, :encoding => 'UTF-8') do |line|
       current_key = line[key_symbol]
       @content[current_key] = line
     end
